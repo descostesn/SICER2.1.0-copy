@@ -4,6 +4,8 @@
 
 # Modified by: Jin Yong Yoo
 
+# Modified by: Nicolas Descostes (2026)
+
 import multiprocessing as mp
 import os
 from functools import partial
@@ -68,7 +70,7 @@ def associate_tags_count_to_regions(args, path_A, path_B, scaling_factor, chrom)
     treatment_A_file_name = args.treatment_file[0].replace('.bed', '') + '_' + chrom + '.npy'
     treatment_A_reads = np.load(os.path.join(path_A, treatment_A_file_name), allow_pickle=True)
     for read in treatment_A_reads:
-        position = associate_tags_with_regions.tag_position(read, args.fragment_size)
+        position = associate_tags_with_regions.tag_position(read, args.fragment_size, getattr(args, "input_type", "SE"))
         index = associate_tags_with_regions.find_readcount_on_islands(island_start_list, island_end_list, position)
         if index >= 0:
             island_A_readcount_list[index] += 1
@@ -79,7 +81,7 @@ def associate_tags_count_to_regions(args, path_A, path_B, scaling_factor, chrom)
     treatment_B_file_name = args.treatment_file[1].replace('.bed', '') + '_' + chrom + '.npy'
     treatment_B_reads = np.load(os.path.join(path_B, treatment_B_file_name), allow_pickle=True)
     for read in treatment_B_reads:
-        position = associate_tags_with_regions.tag_position(read, args.fragment_size)
+        position = associate_tags_with_regions.tag_position(read, args.fragment_size, getattr(args, "input_type", "SE"))
         index = associate_tags_with_regions.find_readcount_on_islands(island_start_list, island_end_list, position)
         if index >= 0:
             island_B_readcount_list[index] += 1

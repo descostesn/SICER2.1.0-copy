@@ -4,6 +4,8 @@
 
 # Modified by: Mengxue Tian (2026)
 
+# Modified by: Nicolas Descostes (2026)
+
 import multiprocessing as mp
 import os
 from functools import partial
@@ -32,7 +34,7 @@ def associate_tag_count_to_regions(args, scaling_factor, control_library_size, g
     island_chip_readcount_list = [0] * len(island_list)
     treatment_reads = np.load(treatment_file, allow_pickle=True)
     for read in treatment_reads:
-        position = associate_tags_with_regions.tag_position(read, args.fragment_size)
+        position = associate_tags_with_regions.tag_position(read, args.fragment_size, getattr(args, "input_type", "SE"))
         index = associate_tags_with_regions.find_readcount_on_islands(island_start_list, island_end_list, position)
         if index >= 0:  # if the read is found in a valid island
             island_chip_readcount_list[index] += 1
@@ -42,7 +44,7 @@ def associate_tag_count_to_regions(args, scaling_factor, control_library_size, g
     island_control_readcount_list = [0] * len(island_list)
     control_reads = np.load(control_file, allow_pickle=True)
     for read in control_reads:
-        position = associate_tags_with_regions.tag_position(read, args.fragment_size)
+        position = associate_tags_with_regions.tag_position(read, args.fragment_size, getattr(args, "input_type", "SE"))
         index = associate_tags_with_regions.find_readcount_on_islands(island_start_list, island_end_list, position)
         if index >= 0:
             island_control_readcount_list[index] += 1

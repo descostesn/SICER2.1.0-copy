@@ -4,6 +4,8 @@
 
 # Modified by: Jin Yong Yoo
 
+# Modified by: Nicolas Descostes (2026)
+
 import bisect
 import multiprocessing as mp
 import os
@@ -15,7 +17,13 @@ import numpy as np
 from sicer.lib import GenomeData
 
 
-def tag_position(read, fragment_size):
+def tag_position(read, fragment_size, input_type="SE"):
+    # Paired-end (input_type "PE"): one BED line per fragment, every line on '+'.
+    # Count the fragment at its midpoint, the tag run_make_graph_file_by_chrom
+    # builds the islands from (get_bed_coords); start + fragment_size/2 would
+    # count it fragment_size/2 from its start, wherever its midpoint is.
+    if input_type == "PE":
+        return (int(read[1]) + int(read[2])) // 2
     shift = int(round(fragment_size / 2))
     if (read[5] == '+'):
         return read[1] + shift
@@ -23,7 +31,7 @@ def tag_position(read, fragment_size):
         return read[2] - 1 - shift
 
 
-def filter_tags_by_islands(file_name, fragment_size, chrom):
+def filter_tags_by_islands(file_name, fragment_size, input_type, chrom):
     island_list = np.load(file_name + '_' + chrom + '_island_summary.npy', allow_pickle=True)
     read_list = np.load(file_name + '_' + chrom + '.npy', allow_pickle=True)
     filtered_reads = []
@@ -38,7 +46,7 @@ def filter_tags_by_islands(file_name, fragment_size, chrom):
         island_end_list.sort()
 
         for read in read_list:
-            position = tag_position(read, fragment_size)
+            position = tag_position(read, fragment_size, input_type)
             if bisect.bisect_right(island_start_list, position) - bisect.bisect_left(island_end_list, position) == 1:
                 filtered_reads.append(read)
 
@@ -52,7 +60,7 @@ def main(args, pool):
 
     # Use multiprocessing to filter raw tags by islands in parallel processes
     #pool = mp.Pool(processes=min(args.cpu, len(chroms)))
-    filter_tags_by_islands_partial = partial(filter_tags_by_islands, treatment_file, args.fragment_size)
+    filter_tags_by_islands_partial = partial(filter_tags_by_islands, treatment_file, args.fragment_size, getattr(args, "input_type", "SE"))
     pool.map(filter_tags_by_islands_partial, chroms)
     #pool.close()
 
