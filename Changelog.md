@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2026-10-16
+### Fixed
+- Paired-end island read counts now count each fragment at its midpoint, the position the islands are built from, instead of start + fragment_size/2.
+
 ## [2.1] - 2026-02-05
 ### Fixed
 - Fixed generating bed file from bam file duplicate issue.
