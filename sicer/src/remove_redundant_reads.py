@@ -184,14 +184,14 @@ def main(args, path_to_file, pool):
 
     # Use multiprocessing module to run parallel processes for each chromosome
     # NOTE: we pass args.input_type down so SE/PE has the same removing redundant logic
-    find_and_filter_reads_partial = partial(find_and_filter_reads, path_to_file, cutoff, args.input_type)
+    find_and_filter_reads_partial = partial(find_and_filter_reads, path_to_file, cutoff, getattr(args, "input_type", "SE"))
     filtered_result = pool.map(find_and_filter_reads_partial, chroms)
     # pool.close()
 
     total_read_count = 0
 
     # Print header
-    if args.input_type == "PE":
+    if getattr(args, "input_type", "SE") == "PE":
         # Fragment-level (PE-like) mode: only total/retained fragments
         print('-' * 60)
         print('{:<5s}{:^25s}{:^25s}'.format(

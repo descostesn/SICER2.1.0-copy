@@ -243,7 +243,7 @@ def makeGraphFile(args, filtered, chrom, chrom_length):
     args.fragment_size,
     chrom,
     args.verbose,
-    args.input_type  # new argument
+    getattr(args, "input_type", "SE")  # new argument
     )
     
     chrom_graph, tag_count = Generate_windows_and_count_tags(tag_list, chrom, chrom_length, args.window_size)
