@@ -1,9 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.1.1] - 2026-10-16
+## [2.1.1] - 2026-10-19
 ### Fixed
 - Paired-end island read counts now count each fragment at its midpoint, the position the islands are built from, instead of start + fragment_size/2.
+- sicer_df, recognicer and recognicer_df no longer stop with "'Namespace' object has no attribute 'input_type'": a run without input_type is single-end.
+- sicer --significant_reads on single-end data no longer stops with an IndexError in the filtered graph step: the reads kept in islands keep their record type.
+- sicer_df and recognicer_df no longer stop on "module 'scipy' has no attribute 'array'" with recent SciPy: the FDR step uses numpy.array.
 
 ## [2.1] - 2026-02-05
 ### Fixed

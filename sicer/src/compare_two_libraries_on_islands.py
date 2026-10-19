@@ -45,7 +45,7 @@ def fdr(pvalue_list):
     Calculate the multiple testing corrected p-value using BH
     """
     fdr_list = []
-    pvaluearray = scipy.array(pvalue_list)
+    pvaluearray = np.array(pvalue_list)
     totalnumber = len(pvalue_list)
     pvaluerankarray = scipy.stats.rankdata(pvaluearray)
     for i in range(totalnumber):

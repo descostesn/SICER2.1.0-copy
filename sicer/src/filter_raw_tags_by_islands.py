@@ -50,7 +50,7 @@ def filter_tags_by_islands(file_name, fragment_size, input_type, chrom):
             if bisect.bisect_right(island_start_list, position) - bisect.bisect_left(island_end_list, position) == 1:
                 filtered_reads.append(read)
 
-    np_filtered_reads = np.array(filtered_reads, dtype=object)
+    np_filtered_reads = np.array(filtered_reads, dtype=read_list.dtype)
     np.save(file_name + '_' + chrom + '_filtered.npy', np_filtered_reads)
 
 
